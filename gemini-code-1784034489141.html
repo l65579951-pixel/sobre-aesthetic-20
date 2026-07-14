@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tips de Maquillaje de Lucy</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght=700&display=swap');
+
+        /* VARIABLES DE COLOR QUE DETECTAN MODO CLARO/OSCURO */
+        :root {
+            --bg-color: transparent; 
+            --text-color: #ff65a3;
+            --main-font-color: #5d424d;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-color: #ff8ebb;
+                --main-font-color: #fce4ec;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: var(--bg-color); 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--text-color);
+            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+            margin-bottom: 50px;
+            font-size: 24px;
+            text-align: center;
+            padding: 0 15px;
+            z-index: 5;
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .scene {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 5;
+        }
+
+        /* CARTITA ESTÁNDAR */
+        .letter {
+            position: absolute;
+            bottom: 40px; 
+            width: 240px;
+            background: #ffffff;
+            border: 4px solid #ff65a3;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 10px 20px rgba(255, 101, 163, 0.1);
+            z-index: 10;
+            transform: translateY(0) scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s, background 0.3s, border-color 0.3s;
+            text-align: center;
+            cursor: pointer;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .letter::-webkit-scrollbar { width: 4px; }
+        .letter::-webkit-scrollbar-thumb { background: #ff65a3; border-radius: 4px; }
+
+        .letter.reveal {
+            transform: translateY(-140px) scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .letter-title {
+            font-family: 'Fredoka One', cursive;
+            color: #ff65a3;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .letter-text {
+            color: #5d424d;
+            font-size: 12.5px;
+            line-height: 1.4;
+            transition: color 0.3s;
+        }
+
+        .click-to-close {
+            margin-top: 10px;
+            font-size: 9px;
+            color: #b59ba5;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* 👑 ESTILOS EXCLUSIVOS DE LA NOTA DORADA ESPECIAL */
+        .letter.gold-card {
+            background: linear-gradient(135deg, #fffdf0 0%, #fff3b3 50%, #ffe866 100%);
+            border: 4px dashed #ffb300;
+            box-shadow: 0 0 25px rgba(255, 179, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.6);
+            animation: pulseGold 2s infinite alternate;
+        }
+        .letter.gold-card .letter-title {
+            color: #b27a00;
+            text-shadow: 1px 1px 0px #fff;
+        }
+        .letter.gold-card .letter-text {
+            color: #513b00;
+            font-weight: bold;
+        }
+        .letter.gold-card .click-to-close {
+            color: #cca33d;
+        }
+
+        @keyframes pulseGold {
+            0% { box-shadow: 0 0 20px rgba(255, 179, 0, 0.4); }
+            100% { box-shadow: 0 0 35px rgba(255, 179, 0, 0.8); }
+        }
+
+        /* EL SOBRE */
+        .envelope-wrapper {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            cursor: pointer;
+            z-index: 20; 
+            transition: transform 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .envelope-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .envelope-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated; 
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-in-out;
+        }
+
+        .envelope-img.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .guide-bubble {
+            position: absolute;
+            top: -40px;
+            background: #ff65a3;
+            color: white;
+            border: 2px solid white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 101, 163, 0.2);
+            animation: bounce 0.8s infinite alternate;
+            pointer-events: none;
+            z-index: 30;
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-6px); }
+        }
+
+        /* ✨ CONTENEDOR DE FUEGOS ARTIFICIALES (EN EL CENTRO DEL SOBRE / GIGANTE) */
+        .fireworks-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 550px;  /* ¡Súper Gigante! */
+            height: 550px;
+            max-width: 95vw; /* Para que no desborde en pantallas chicas */
+            max-height: 95vh;
+            pointer-events: none;
+            z-index: 300; /* Adelante de absolutamente TODO (Sobre, Carta, Textos) */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .firework {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: scale(0.4); /* Comienza chico en el centro */
+        }
+
+        /* Todos se centran exactamente uno encima del otro en el mismo eje */
+        #fw1, #fw2, #fw3 {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+        }
+
+        .firework.active {
+            opacity: 0.95; /* Súper brillante y nítido */
+            transform: scale(1.15); /* Crece un montón en la explosión */
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="mainHeader">💌 ¡Toca el sobre para ver un tip!</h1>
+
+    <div class="scene">
+        
+        <!-- Capa de Fuegos Artificiales Gigantes encima de todo -->
+        <div class="fireworks-container">
+            <img src="https://i.postimg.cc/m2zw4sT8/Find-Share-on-GIPHY.gif" class="firework" id="fw1">
+            <img src="https://i.postimg.cc/q7LcwBGB/2674081026469214.gif" class="firework" id="fw2">
+            <img src="https://i.postimg.cc/5yHwfBWd/stars-changing-colors-gif-480-480-piksel.gif" class="firework" id="fw3">
+        </div>
+
+        <!-- Cartita interna -->
+        <div class="letter" id="letterPaper">
+            <div class="letter-title" id="letterTitle">💄 Tip #00 💄</div>
+            <p class="letter-text" id="tipText">Cargando tip...</p>
+            <div class="click-to-close">✨ Toca para guardar ✨</div>
+        </div>
+
+        <!-- Sobre Interactivo -->
+        <div class="envelope-wrapper" id="envelopeBtn">
+            <div class="guide-bubble" id="guideText">¡Ábreme!</div>
+
+            <!-- Sobre Cerrado -->
+            <img src="https://i.postimg.cc/GhgdYN9F/GIFs.gif" alt="Sobre Cerrado" class="envelope-img active" id="imgClosed">
+            
+            <!-- Sobre Abierto -->
+            <img src="https://i.postimg.cc/PxvWjbjp/Diseno-sin-titulo-14-removebg-preview.png" alt="Sobre Abierto" class="envelope-img" id="imgOpen">
+        </div>
+
+    </div>
+
+    <script>
+        const tipsMaquillaje = [
+            "La preparación de la piel es el 70% del maquillaje. Limpia, hidrata y usa protector solar antes de empezar.",
+            "Espera unos minutos después de la crema hidratante. Así la base no se mezcla con los productos de skincare.",
+            "Usa primer solo donde lo necesites. No toda la cara necesita uno. Zona T para poros, mejillas si son secas, etc.",
+            "Aplica la base en capas finas. Es más fácil agregar producto que intentar quitar un exceso.",
+            "Empieza desde el centro del rostro hacia afuera. Ahí suele haber más rojeces e imperfecciones.",
+            "Humedece la esponja. Una beauty blender húmeda deja un acabado mucho más natural.",
+            "No arrastres la base. Da pequeños toques para mantener la cobertura uniforme.",
+            "El corrector no tiene que ser mucho más claro que tu piel. Medio tono o un tono suele verse más natural.",
+            "Corrige primero el color y luego ilumina. Si tienes ojeras muy oscuras, un corrector salmón o durazno puede hacer maravillas.",
+            "Sella solo donde sea necesario. Empolvar toda la cara puede quitar luminosidad.",
+            "Presiona el polvo sobre la piel en lugar de barrerlo. Esto aumenta la duración del maquillaje.",
+            "Las cejas deben enmarcar el rostro, no dominarlo. Rellena los huecos siguiendo la dirección natural del vello.",
+            "Peina las cejas antes y después de maquillarlas. Hace que el resultado se vea mucho más limpio.",
+            "Difumina siempre los bordes de las sombras. Una transición suave es lo que hace que un maquillaje parezca profesional.",
+            "Trabaja de tonos claros a oscuros. Es más fácil intensificar que suavizar un color muy oscuro.",
+            "Aplica una sombra mate de transición antes de los colores intensos. Facilita muchísimo el difuminado.",
+            "Humedece el pincel para sombras metálicas. Obtendrás un brillo mucho más intenso.",
+            "Haz el delineado mirando al frente. Así respetas la forma natural de tus ojos.",
+            "Riza las pestañas antes del rímel. Nunca después, salvo que quieras poner a prueba la resistencia de tus pestañas.",
+            "Aplica el rubor un poco más alto. Ayuda a dar un efecto de rostro más levantado.",
+            "El bronzer debe imitar una sombra natural. No tiene que verse naranja ni formar una línea marcada.",
+            "El iluminador se ve mejor con moderación. Puntos estratégicos como pómulos, lagrimal y arco de Cupido suelen ser suficientes.",
+            "Perfila los labios antes del labial. Aumenta la duración y ayuda a definir la forma.",
+            "Fija el maquillaje en dos etapas. Un poco de spray fijador antes del polvo y otra capa al terminar puede mejorar la duración.",
+            "Maquíllate con luz natural siempre que sea posible. Muchas sorpresas desagradables nacen de un espejo con luces amarillas que convencen a cualquiera de que el cuello no existe.",
+            "Usa una paleta o el dorso de la mano para calentar la base antes de aplicarla.",
+            "Espera unos 30 segundos entre cada capa de producto para evitar que se mueva.",
+            "Si usas productos en crema, aplícalos antes de los productos en polvo.",
+            "Elige brochas pequeñas para mayor precisión, incluso en zonas amplias.",
+            "Difumina siempre el contorno hacia arriba, nunca hacia abajo.",
+            "No lleves el corrector hasta la línea inferior completa del ojo; concentra el producto donde realmente hay oscuridad.",
+            "Para un efecto lifting, lleva el rubor ligeramente hacia las sienes.",
+            "Usa un espejo un poco más abajo de tu rostro al maquillar los ojos para mantenerlos relajados.",
+            "Retira el exceso de máscara del cepillo antes de aplicarla para evitar grumos.",
+            "Aplica el rímel desde la raíz haciendo un ligero movimiento en zigzag.",
+            "Deja secar unos segundos entre la primera y segunda capa de máscara.",
+            "Si quieres labios más definidos, perfílalos después de aplicar un poco de base en el contorno.",
+            "Ilumina sutilmente el arco de la ceja para dar sensación de mayor elevación.",
+            "Usa un delineador marrón si buscas un maquillaje más suave que el negro.",
+            "Una sombra del mismo tono que tu piel ayuda a fijar el primer de párpados.",
+            "Para un ahumado limpio, trabaja primero con un lápiz cremoso y luego difumínalo con sombras.",
+            "Si un maquillaje quedó muy intenso, una brocha limpia puede suavizar la transición sin añadir más producto.",
+            "Aplica el iluminador después del rubor para integrarlos mejor.",
+            "No olvides maquillar ligeramente las orejas y el cuello si llevas una base de alta cobertura.",
+            "Lleva siempre un hisopo con un poco de agua micelar para corregir pequeños errores sin arruinar el resto del maquillaje.",
+            "Usa papel absorbente antes de reaplicar polvo durante el día; así evitas que el maquillaje se vea pesado.",
+            "Las pestañas postizas lucen más naturales si cortas un poco del extremo externo para adaptarlas a tu ojo.",
+            "Espera a que el pegamento de las pestañas esté semiseco antes de colocarlas; se adhieren mucho mejor.",
+            "Revisa el maquillaje desde distintos ángulos y con diferentes tipos de luz antes de darlo por terminado.",
+            "Da un paso atrás del espejo al finalizar. De cerca todo parece un proyecto de restauración arqueológica; a una distancia normal es donde realmente se aprecia si el maquillaje está equilibrado."
+        ];
+
+        // Los 5 tips ultra raros dorados numerados
+        const tipsRaros = [
+            { numero: "01", titulo: "👑 Especial #01: Dimensión 👑", texto: "Los profesionales no ven una cara como 'ojos, labios y mejillas'. Ven luces, sombras, profundidad y volumen. Antes de aplicar cualquier producto, observa dónde la luz golpea naturalmente tu rostro y dónde se forman las sombras. Eso hace que el maquillaje se vea armónico en lugar de 'dibujado'." },
+            { numero: "02", titulo: "👑 Especial #02: El Secreto 👑", texto: "El difuminado perfecto casi nunca se logra añadiendo producto, sino quitándolo. Cuando sientas que una sombra o un rubor quedó muy intenso, no agregues más color para corregirlo. Usa una brocha completamente limpia y realiza movimientos suaves en los bordes para lograr esa transición impecable." },
+            { numero: "03", titulo: "👑 Especial #03: Capas 👑", texto: "En lugar de aplicar una cantidad grande de producto de una sola vez, deposita cantidades mínimas y deja que cada capa se asiente antes de añadir otra. Esta técnica consigue un acabado mucho más natural, resistente y difícil de cuartear (efecto 'segunda piel')." },
+            { numero: "04", titulo: "👑 Especial #04: Distancia 👑", texto: "Los maquilladores profesionales alternan entre trabajar de cerca y observar el rostro desde uno o dos metros de distancia. De cerca corriges detalles; de lejos ves el equilibrio general. Muchas veces algo que parece perfecto a cinco centímetros resulta demasiado intenso a distancia normal." },
+            { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje está cumpliendo su función." }
+        ];
+
+        const envelopeBtn = document.getElementById('envelopeBtn');
+        const imgClosed = document.getElementById('imgClosed');
+        const imgOpen = document.getElementById('imgOpen');
+        const letterPaper = document.getElementById('letterPaper');
+        const letterTitle = document.getElementById('letterTitle');
+        const tipText = document.getElementById('tipText');
+        const guideText = document.getElementById('guideText');
+        
+        // Elementos de los fuegos artificiales
+        const fw1 = document.getElementById('fw1');
+        const fw2 = document.getElementById('fw2');
+        const fw3 = document.getElementById('fw3');
+        let fw23Timeout, clearFwTimeout;
+
+        let estaAbierto = false;
+
+        function lanzarEstrellas() {
+            limpiarEstrellas();
+
+            // 1. Aparece el primero instantáneamente gigante en el centro
+            fw1.classList.add('active');
+            
+            // 2. A los 2 segundos aparecen los otros dos directamente encima en el mismo eje
+            fw23Timeout = setTimeout(() => {
+                fw2.classList.add('active');
+                fw3.classList.add('active');
+            }, 2000);
+
+            // 3. A los 6 segundos de abrirse se desvanecen todos para poder leer sin problemas
+            clearFwTimeout = setTimeout(() => {
+                limpiarEstrellas();
+            }, 6000);
+        }
+
+        function limpiarEstrellas() {
+            clearTimeout(fw23Timeout);
+            clearTimeout(clearFwTimeout);
+            fw1.classList.remove('active');
+            fw2.classList.remove('active');
+            fw3.classList.remove('active');
+        }
+
+        envelopeBtn.addEventListener('click', () => {
+            if (estaAbierto) return; 
+            
+            estaAbierto = true;
+            guideText.style.display = 'none';
+
+            imgClosed.classList.remove('active');
+            imgOpen.classList.add('active');
+
+            // Probabilidad exacta de 1 entre 12 (aprox 8.33%)
+            const esDoradoUltraRaro = Math.random() < 0.0833;
+
+            if (esDoradoUltraRaro) {
+                letterPaper.classList.add('gold-card');
+                const raroElegido = tipsRaros[Math.floor(Math.random() * tipsRaros.length)];
+                letterTitle.innerText = raroElegido.titulo;
+                tipText.innerText = raroElegido.texto;
+                
+                // Lanzar fuegos artificiales gigantes centrados en el sobre/pantalla
+                lanzarEstrellas();
+            } else {
+                letterPaper.classList.remove('gold-card');
+                const indiceRandom = Math.floor(Math.random() * tipsMaquillaje.length);
+                const tipElegido = tipsMaquillaje[indiceRandom];
+                
+                // Formateamos el número para que siempre tenga dos dígitos (ej: #03)
+                const numeroTip = String(indiceRandom + 1).padStart(2, '0');
+                
+                letterTitle.innerText = `💄 Tip #${numeroTip} 💄`;
+                tipText.innerText = tipElegido;
+            }
+
+            letterPaper.scrollTop = 0;
+
+            setTimeout(() => {
+                letterPaper.classList.add('reveal');
+            }, 150);
+        });
+
+        letterPaper.addEventListener('click', () => {
+            if (!estaAbierto) return;
+
+            letterPaper.classList.remove('reveal');
+            limpiarEstrellas();
+
+            setTimeout(() => {
+                imgOpen.classList.remove('active');
+                imgClosed.classList.add('active');
+                guideText.style.display = 'block';
+                estaAbierto = false;
+            }, 300);
+        });
+    </script>
+</body>
+</html>
