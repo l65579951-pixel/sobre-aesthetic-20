@@ -332,29 +332,51 @@
     </div>
 
     <script>
-        // --- SELECCIÓN Y GUARDADO ABSOLUTO DEL TEMA ---
+        // --- BASE DE DATOS DE MEMORIA SEGURA CONTRA CRASHEOS EN IFRAMES ---
+        function guardarEnLocalStorage(clave, valor) {
+            try {
+                localStorage.setItem(clave, JSON.stringify(valor));
+            } catch (e) {
+                // Si Notion bloquea el Storage por privacidad, guardamos en memoria volátil de forma silenciosa
+                window[clave] = valor;
+            }
+        }
+
+        function leerDeLocalStorage(clave, valorPorDefecto) {
+            try {
+                const item = localStorage.getItem(clave);
+                return item ? JSON.parse(item) : valorPorDefecto;
+            } catch (e) {
+                return window[clave] !== undefined ? window[clave] : valorPorDefecto;
+            }
+        }
+
+        // --- MANEJO ROBUSTO DEL BOTÓN DE TEMA ---
         const themeToggleBtn = document.getElementById('themeToggleBtn');
 
         function aplicarTema(tema) {
             if (tema === 'dark') {
+                document.documentElement.classList.add('dark-mode');
                 document.body.classList.add('dark-mode');
-                themeToggleBtn.innerText = '☀'; // Sol para cambiar a claro
-                localStorage.setItem('preferenciaTema', 'dark');
+                themeToggleBtn.innerText = '☀'; // Muestra sol
+                guardarEnLocalStorage('preferenciaTema', 'dark');
             } else {
+                document.documentElement.classList.remove('dark-mode');
                 document.body.classList.remove('dark-mode');
-                themeToggleBtn.innerText = '☾'; // Luna para cambiar a oscuro
-                localStorage.setItem('preferenciaTema', 'light');
+                themeToggleBtn.innerText = '☾'; // Muestra luna
+                guardarEnLocalStorage('preferenciaTema', 'light');
             }
         }
 
-        // Cargar el tema guardado. Si no existe, usar el claro por defecto.
-        const temaInicial = localStorage.getItem('preferenciaTema') || 'light';
+        // Cargar el tema inicial sin fallos
+        const temaInicial = leerDeLocalStorage('preferenciaTema', 'light');
         aplicarTema(temaInicial);
 
-        // Cambiar de tema únicamente al presionar el botón
-        themeToggleBtn.addEventListener('click', () => {
-            const esOscuro = document.body.classList.contains('dark-mode');
-            aplicarTema(esOscuro ? 'light' : 'dark');
+        // Evento de clic inmune a bloqueos
+        themeToggleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const esOscuroActivo = document.body.classList.contains('dark-mode');
+            aplicarTema(esOscuroActivo ? 'light' : 'dark');
         });
 
 
@@ -419,18 +441,18 @@
             { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje funciona." }
         ];
 
-        // --- SISTEMA DE MEMORIA LOCAL (LOCALSTORAGE) ---
-        let historialComunes = JSON.parse(localStorage.getItem('historialComunes')) || [];
-        let historialDoradas = JSON.parse(localStorage.getItem('historialDoradas')) || [];
-        let comunesDesdeUltimaDorada = parseInt(localStorage.getItem('comunesDesdeUltimaDorada')) || 15;
+        // --- SISTEMA DE MEMORIA SEGURO CONTRA BLOQUEOS DE NOTION ---
+        let historialComunes = leerDeLocalStorage('historialComunes', []);
+        let historialDoradas = leerDeLocalStorage('historialDoradas', []);
+        let comunesDesdeUltimaDorada = leerDeLocalStorage('comunesDesdeUltimaDorada', 15);
 
         const LIMITE_MEMORIA_COMUNES = 15; 
         const COOLDOWN_MINIMO_DORADAS = 15; 
 
         function guardarDatos() {
-            localStorage.setItem('historialComunes', JSON.stringify(historialComunes));
-            localStorage.setItem('historialDoradas', JSON.stringify(historialDoradas));
-            localStorage.setItem('comunesDesdeUltimaDorada', comunesDesdeUltimaDorada);
+            guardarEnLocalStorage('historialComunes', historialComunes);
+            guardarEnLocalStorage('historialDoradas', historialDoradas);
+            guardarEnLocalStorage('comunesDesdeUltimaDorada', comunesDesdeUltimaDorada);
         }
 
         function obtenerTipComun() {
