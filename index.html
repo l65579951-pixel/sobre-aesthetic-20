@@ -19,12 +19,12 @@
             --sub-text-color: #b59ba5;
         }
 
-        /* CLASE PARA MODO OSCURO FORZADO O DETECTADO */
+        /* CLASE PARA MODO OSCURO */
         .dark-mode {
             --text-color: #ff8ebb;
             --main-font-color: #fce4ec;
-            --card-bg: #221a1d; /* Fondo oscuro aesthetic para la carta */
-            --card-border: #ff8ebb; /* Borde rosa más brillante */
+            --card-bg: #221a1d; 
+            --card-border: #ff8ebb; 
             --card-shadow: rgba(255, 142, 187, 0.25);
             --sub-text-color: #a38591;
         }
@@ -46,6 +46,30 @@
             overflow: hidden;
             position: relative;
             transition: background 0.3s ease;
+        }
+
+        /* BOTÓN MANUAL DE MODO OSCURO (Discreto y elegante) */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 101, 163, 0.15);
+            border: 2px solid var(--card-border);
+            color: var(--text-color);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 14px;
+            z-index: 100;
+            transition: all 0.2s ease;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 101, 163, 0.25);
         }
 
         h1 {
@@ -271,6 +295,9 @@
 </head>
 <body>
 
+    <!-- Botón manual para cambiar de tema e informar al widget -->
+    <button class="theme-toggle" id="themeToggleBtn" title="Cambiar tema">☾</button>
+
     <h1 id="mainHeader">💌 ¡Toca el sobre para ver un tip!</h1>
 
     <div class="scene">
@@ -303,27 +330,55 @@
     </div>
 
     <script>
-        // --- DETECTOR Y CONFIGURADOR DE MODO OSCURO SEGURO ---
-        function aplicarModoOscuro() {
-            // Comprobamos la preferencia del sistema/navegador
-            const prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            
-            // Aplicamos la clase si el sistema está en oscuro
-            if (prefiereOscuro) {
+        // --- GESTOR DE MODO OSCURO SÚPER PRECISO ---
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+        function setTema(modo) {
+            if (modo === 'dark') {
                 document.body.classList.add('dark-mode');
+                themeToggleBtn.innerText = '☀';
+                localStorage.setItem('temaForzado', 'dark');
             } else {
                 document.body.classList.remove('dark-mode');
+                themeToggleBtn.innerText = '☾';
+                localStorage.setItem('temaForzado', 'light');
             }
         }
 
-        // Ejecutar al cargar la página
-        aplicarModoOscuro();
-
-        // Escuchar si el usuario cambia el tema del sistema en tiempo real
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarModoOscuro);
+        // 1. Detección Inteligente por consulta de sistema
+        function autoDetectarTema() {
+            const temaGuardado = localStorage.getItem('temaForzado');
+            if (temaGuardado) {
+                setTema(temaGuardado);
+            } else {
+                const prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                setTema(prefiereOscuro ? 'dark' : 'light');
+            }
         }
 
+        // 2. Control de clic manual (Siempre tiene prioridad y se guarda)
+        themeToggleBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('dark-mode')) {
+                setTema('light');
+            } else {
+                setTema('dark');
+            }
+        });
+
+        // Inicializar tema al cargar
+        autoDetectarTema();
+
+        // Escuchar cambios de Notion del sistema
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                if (!localStorage.getItem('temaForzado')) {
+                    setTema(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+
+
+        // --- BASE DE DATOS DE TIPS ---
         const tipsMaquillaje = [
             "La preparación de la piel es el 70% del maquillaje. Limpia, hidrata y usa protector solar antes de empezar.",
             "Espera unos minutos después de la crema hidratante. Así la base no se mezcla con los productos de skincare.",
@@ -349,7 +404,7 @@
             "El iluminador se ve mejor con moderación. Puntos estratégicos como pómulos, lagrimal y arco de Cupido suelen ser suficientes.",
             "Perfila los labios antes del labial. Aumenta la duración y ayuda a definir la forma.",
             "Fija el maquillaje en dos etapas. Un poco de spray fijador antes del polvo y otra capa al terminar puede mejorar la duración.",
-            "Maquíllate con luz natural siempre que sea posible. Muchas sorpresas desagradables nacen de un espejo con luces amarillas que convencen a cualquiera de que el cuello no existe.",
+            "Maquíllate con luz natural siempre que sea posible. Muchas sorpresas desagradables nacen de un espejo con luces amarillas.",
             "Usa una paleta o el dorso de la mano para calentar la base antes de aplicarla.",
             "Espera unos 30 segundos entre cada capa de producto para evitar que se mueva.",
             "Si usas productos en crema, aplícalos antes de los productos en polvo.",
@@ -368,24 +423,23 @@
             "Si un maquillaje quedó muy intenso, una brocha limpia puede suavizar la transición sin añadir más producto.",
             "Aplica el iluminador después del rubor para integrarlos mejor.",
             "No olvides maquillar ligeramente las orejas y el cuello si llevas una base de alta cobertura.",
-            "Lleva siempre un hisopo con un poco de agua micelar para corregir pequeños errores sin arruinar el resto del maquillaje.",
-            "Usa papel absorbente antes de reaplicar polvo durante el día; así evitas que el maquillaje se vea pesado.",
-            "Las pestañas postizas lucen más naturales si cortas un poco del extremo externo para adaptarlas a tu ojo.",
-            "Espera a que el pegamento de las pestañas esté semiseco antes de colocarlas; se adhieren mucho mejor.",
-            "Revisa el maquillaje desde distintos ángulos y con diferentes tipos de luz antes de darlo por terminado.",
-            "Da un paso atrás del espejo al finalizar. De cerca todo parece un proyecto de restauración arqueológica; a una distancia normal es donde realmente se aprecia si el maquillaje está equilibrado."
+            "Lleva siempre un hisopo con un poco de agua micelar para corregir pequeños errores.",
+            "Usa papel absorbente antes de reaplicar polvo durante el día.",
+            "Las pestañas postizas lucen más naturales si cortas un poco del extremo externo.",
+            "Espera a que el pegamento de las pestañas esté semiseco antes de colocarlas.",
+            "Revisa el maquillaje desde distintos ángulos y con diferentes tipos de luz.",
+            "Da un paso atrás del espejo al finalizar. De cerca todo parece un proyecto arqueológico; de lejos es donde se aprecia el equilibrio real."
         ];
 
         const tipsRaros = [
-            { numero: "01", titulo: "👑 Especial #01: Dimensión 👑", texto: "Los profesionales no ven una cara como 'ojos, labios y mejillas'. Ven luces, sombras, profundidad y volumen. Antes de aplicar cualquier producto, observa dónde la luz golpea naturalmente tu rostro y dónde se forman las sombras. Eso hace que el maquillaje se vea armónico en lugar de 'dibujado'." },
-            { numero: "02", titulo: "👑 Especial #02: El Secreto 👑", texto: "El difuminado perfecto casi nunca se logra añadiendo producto, sino quitándolo. Cuando sientas que una sombra o un rubor quedó muy intenso, no agregues más color para corregirlo. Usa una brocha completamente limpia y realiza movimientos suaves en los bordes para lograr esa transición impecable." },
-            { numero: "03", titulo: "👑 Especial #03: Capas 👑", texto: "En lugar de aplicar una cantidad grande de producto de una sola vez, deposita cantidades mínimas y deja que cada capa se asiente antes de añadir otra. Esta técnica consigue un acabado mucho más natural, resistente y difícil de cuartear (efecto 'segunda piel')." },
-            { numero: "04", titulo: "👑 Especial #04: Distancia 👑", texto: "Los maquilladores profesionales alternan entre trabajar de cerca y observar el rostro desde uno o dos metros de distancia. De cerca corriges detalles; de lejos ves el equilibrio general. Muchas veces algo que parece perfecto a cinco centímetros resulta demasiado intenso a distancia normal." },
-            { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje está cumpliendo su función." }
+            { numero: "01", titulo: "👑 Especial #01: Dimensión 👑", texto: "Los profesionales no ven una cara como 'ojos, labios y mejillas'. Ven luces, sombras, profundidad y volumen. Antes de aplicar cualquier producto, observa dónde la luz golpea naturalmente tu rostro y dónde se forman las sombras." },
+            { numero: "02", titulo: "👑 Especial #02: El Secreto 👑", texto: "El difuminado perfecto casi nunca se logra añadiendo producto, sino quitándolo. Cuando sientas que una sombra o un rubor quedó muy intenso, no agregues más color. Usa una brocha limpia y realiza movimientos suaves en los bordes." },
+            { numero: "03", titulo: "👑 Especial #03: Capas 👑", texto: "En lugar de aplicar una cantidad grande de producto de una sola vez, deposita cantidades mínimas y deja que cada capa se asiente antes de añadir otra. Esta técnica consigue un acabado mucho más natural y difícil de cuartear." },
+            { numero: "04", titulo: "👑 Especial #04: Distancia 👑", texto: "Los maquilladores profesionales alternan entre trabajar de cerca y observar el rostro desde uno o dos metros de distancia. De cerca corriges detalles; de lejos ves el equilibrio general. Muchas veces lo que parece perfecto de cerca se ve muy cargado de lejos." },
+            { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje funciona." }
         ];
 
         // --- SISTEMA DE MEMORIA LOCAL (LOCALSTORAGE) ---
-        // Esto permite que el navegador de Notion recuerde tu progreso e historiales
         let historialComunes = JSON.parse(localStorage.getItem('historialComunes')) || [];
         let historialDoradas = JSON.parse(localStorage.getItem('historialDoradas')) || [];
         let comunesDesdeUltimaDorada = parseInt(localStorage.getItem('comunesDesdeUltimaDorada')) || 15;
@@ -483,7 +537,7 @@
             imgClosed.classList.remove('active');
             imgOpen.classList.add('active');
 
-            // 1 de cada 11 posibilidades de dorada, y haber superado el cooldown obligatorio de 15 tiradas comunes
+            // 1 de cada 11 posibilidades (~9.09%) + cooldown
             const cooldownSuperado = comunesDesdeUltimaDorada >= COOLDOWN_MINIMO_DORADAS;
             const esDoradoUltraRaro = (Math.random() < 0.0909) && cooldownSuperado;
 
