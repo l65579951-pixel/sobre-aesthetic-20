@@ -8,9 +8,11 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght=700&display=swap');
 
-        /* VARIABLES DE COLOR POR DEFECTO (MODO CLARO) */
+        /* ========================================================
+           1. PALETA DE COLORES POR DEFECTO (MODO CLARO)
+           ======================================================== */
         :root {
-            --bg-color: #ffffff; /* Ahora el fondo no es transparente para evitar que Notion mande sus propios colores */
+            --bg-color: #ffffff; 
             --text-color: #ff65a3;
             --main-font-color: #5d424d;
             --card-bg: #ffffff;
@@ -19,17 +21,24 @@
             --sub-text-color: #b59ba5;
         }
 
-        /* CLASE PARA MODO OSCURO (APLICADA DIRECTAMENTE AL BODY) */
-        body.dark-mode {
-            --bg-color: #191919; /* Fondo oscuro sólido para que no interfiera Notion */
-            --text-color: #ff8ebb;
-            --main-font-color: #fce4ec;
-            --card-bg: #221a1d; 
-            --card-border: #ff8ebb; 
-            --card-shadow: rgba(255, 142, 187, 0.25);
-            --sub-text-color: #a38591;
+        /* ========================================================
+           2. DETECTOR AUTOMÁTICO DE MODO OSCURO (A LA MOON HUB 🌙)
+           ======================================================== */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #191919; 
+                --text-color: #ff8ebb;
+                --main-font-color: #fce4ec;
+                --card-bg: #221a1d; 
+                --card-border: #ff8ebb; 
+                --card-shadow: rgba(255, 142, 187, 0.25);
+                --sub-text-color: #a38591;
+            }
         }
 
+        /* ========================================================
+           3. ESTILOS BASE Y ESTRUCTURA
+           ======================================================== */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -49,37 +58,10 @@
             transition: background-color 0.3s ease;
         }
 
-        /* BOTÓN DE MODO OSCURO */
-        .theme-toggle {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 101, 163, 0.1);
-            border: 2px solid var(--card-border);
-            color: var(--text-color);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            font-size: 16px;
-            z-index: 100;
-            outline: none;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            transition: transform 0.2s ease, background-color 0.3s/border-color 0.3s ease;
-        }
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            background: rgba(255, 101, 163, 0.2);
-        }
-
         h1 {
             font-family: 'Fredoka One', cursive;
             color: var(--text-color);
-            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
             margin-bottom: 50px;
             font-size: 24px;
             text-align: center;
@@ -155,7 +137,7 @@
             transition: color 0.3s;
         }
 
-        /* 👑 ESTILOS EXCLUSIVOS DE LA NOTA DORADA ESPECIAL */
+        /* 👑 ESTILOS DE LA NOTA DORADA ESPECIAL (MODO CLARO Y OSCURO) */
         .letter.gold-card {
             background: linear-gradient(135deg, #fffdf0 0%, #fff3b3 50%, #ffe866 100%) !important;
             border: 4px dashed #ffb300 !important;
@@ -163,37 +145,36 @@
             animation: pulseGold 2s infinite alternate;
         }
         
-        body.dark-mode .letter.gold-card {
-            background: linear-gradient(135deg, #2d2812 0%, #4a3e1a 50%, #615018 100%) !important;
-            border: 4px dashed #ffd54f !important;
-            box-shadow: 0 0 25px rgba(255, 213, 79, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.5) !important;
-        }
-        
         .letter.gold-card .letter-title {
             color: #b27a00 !important;
             text-shadow: 1px 1px 0px #fff;
-        }
-        
-        body.dark-mode .letter.gold-card .letter-title {
-            color: #ffd54f !important;
-            text-shadow: 1px 1px 0px #000;
         }
 
         .letter.gold-card .letter-text {
             color: #513b00 !important;
             font-weight: bold;
         }
-        
-        body.dark-mode .letter.gold-card .letter-text {
-            color: #fff8e1 !important;
-        }
 
         .letter.gold-card .click-to-close {
             color: #cca33d !important;
         }
-        
-        body.dark-mode .letter.gold-card .click-to-close {
-            color: #ffd54f !important;
+
+        @media (prefers-color-scheme: dark) {
+            .letter.gold-card {
+                background: linear-gradient(135deg, #2d2812 0%, #4a3e1a 50%, #615018 100%) !important;
+                border: 4px dashed #ffd54f !important;
+                box-shadow: 0 0 25px rgba(255, 213, 79, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.5) !important;
+            }
+            .letter.gold-card .letter-title {
+                color: #ffd54f !important;
+                text-shadow: 1px 1px 0px #000;
+            }
+            .letter.gold-card .letter-text {
+                color: #fff8e1 !important;
+            }
+            .letter.gold-card .click-to-close {
+                color: #ffd54f !important;
+            }
         }
 
         @keyframes pulseGold {
@@ -201,7 +182,7 @@
             100% { box-shadow: 0 0 35px rgba(255, 179, 0, 0.8); }
         }
 
-        /* EL SOBRE */
+        /* EL SOBRE INTERACTIVO */
         .envelope-wrapper {
             width: 200px;
             height: 200px;
@@ -256,7 +237,7 @@
             100% { transform: translateY(-6px); }
         }
 
-        /* ✨ CONTENEDOR DE FUEGOS ARTIFICIALES */
+        /* FUEGOS ARTIFICIALES */
         .fireworks-container {
             position: absolute;
             top: 50%;
@@ -299,28 +280,25 @@
 </head>
 <body>
 
-    <!-- Botón manual para alternar el tema -->
-    <button class="theme-toggle" id="themeToggleBtn" title="Cambiar tema">☾</button>
-
     <h1 id="mainHeader">💌 ¡Toca el sobre para ver un tip!</h1>
 
     <div class="scene">
         
-        <!-- Capa de Fuegos Artificiales Gigantes -->
+        <!-- Fuegos Artificiales -->
         <div class="fireworks-container">
             <img src="https://i.postimg.cc/m2zw4sT8/Find-Share-on-GIPHY.gif" class="firework" id="fw1">
             <img src="https://i.postimg.cc/q7LcwBGB/2674081026469214.gif" class="firework" id="fw2">
             <img src="https://i.postimg.cc/5yHwfBWd/stars-changing-colors-gif-480-480-piksel.gif" class="firework" id="fw3">
         </div>
 
-        <!-- Cartita interna -->
+        <!-- Cartita -->
         <div class="letter" id="letterPaper">
             <div class="letter-title" id="letterTitle">💄 Tip #00 💄</div>
             <p class="letter-text" id="tipText">Cargando tip...</p>
             <div class="click-to-close">✨ Toca para guardar ✨</div>
         </div>
 
-        <!-- Sobre Interactivo -->
+        <!-- Sobre -->
         <div class="envelope-wrapper" id="envelopeBtn">
             <div class="guide-bubble" id="guideText">¡Ábreme!</div>
 
@@ -334,37 +312,37 @@
     </div>
 
     <script>
-        // --- MEMORIA VOLÁTIL (No usa localStorage para que Notion no bloquee el código) ---
-        let memoriaTemporal = {
-            preferenciaTema: 'light',
-            historialComunes: [],
-            historialDoradas: [],
-            comunesDesdeUltimaDorada: 15
-        };
+        // --- BASE DE DATOS DE MEMORIA DEL JUEGO (Con respaldo seguro) ---
+        const parametrosURL = new URLSearchParams(window.location.search);
+        const idPagina = parametrosURL.get('id') || 'tips_defecto';
 
-        // --- MANEJO DEL BOTÓN DE TEMA ---
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const CLAVE_HISTORIAL_COMUNES = `cosmora_hist_comunes_${idPagina}`;
+        const CLAVE_HISTORIAL_DORADAS = `cosmora_hist_doradas_${idPagina}`;
+        const CLAVE_CONTADOR_COOLDOWN = `cosmora_cooldown_${idPagina}`;
 
-        function aplicarTema(tema) {
-            memoriaTemporal.preferenciaTema = tema;
-            if (tema === 'dark') {
-                document.body.classList.add('dark-mode');
-                themeToggleBtn.innerText = '☀'; // Muestra sol en modo oscuro
-            } else {
-                document.body.classList.remove('dark-mode');
-                themeToggleBtn.innerText = '☾'; // Muestra luna en modo claro
+        function guardarDatoSeguro(clave, valor) {
+            try {
+                localStorage.setItem(clave, JSON.stringify(valor));
+            } catch (e) {
+                window[clave] = valor;
             }
         }
 
-        // Cargar modo claro por defecto
-        aplicarTema('light');
+        function leerDatoSeguro(clave, defecto) {
+            try {
+                const item = localStorage.getItem(clave);
+                return item ? JSON.parse(item) : defecto;
+            } catch (e) {
+                return window[clave] !== undefined ? window[clave] : defecto;
+            }
+        }
 
-        // Evento de clic 100% libre de errores de almacenamiento
-        themeToggleBtn.addEventListener('click', () => {
-            const esOscuroActivo = document.body.classList.contains('dark-mode');
-            aplicarTema(esOscuroActivo ? 'light' : 'dark');
-        });
+        let historialComunes = leerDatoSeguro(CLAVE_HISTORIAL_COMUNES, []);
+        let historialDoradas = leerDatoSeguro(CLAVE_HISTORIAL_DORADAS, []);
+        let comunesDesdeUltimaDorada = leerDatoSeguro(CLAVE_CONTADOR_COOLDOWN, 15);
 
+        const LIMITE_MEMORIA_COMUNES = 15; 
+        const COOLDOWN_MINIMO_DORADAS = 15; 
 
         // --- BASE DE DATOS DE TIPS ---
         const tipsMaquillaje = [
@@ -427,45 +405,44 @@
             { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje funciona." }
         ];
 
-        // --- SISTEMA DE MEMORIA EN TIEMPO REAL ---
-        const LIMITE_MEMORIA_COMUNES = 15; 
-        const COOLDOWN_MINIMO_DORADAS = 15; 
-
         function obtenerTipComun() {
             let opcionesDisponibles = tipsMaquillaje
                 .map((text, index) => ({ text, index }))
-                .filter(item => !memoriaTemporal.historialComunes.includes(item.index));
+                .filter(item => !historialComunes.includes(item.index));
 
             if (opcionesDisponibles.length === 0) {
-                memoriaTemporal.historialComunes = [];
+                historialComunes = [];
                 opcionesDisponibles = tipsMaquillaje.map((text, index) => ({ text, index }));
             }
 
             const itemElegido = opcionesDisponibles[Math.floor(Math.random() * opcionesDisponibles.length)];
             
-            memoriaTemporal.historialComunes.push(itemElegido.index);
-            if (memoriaTemporal.historialComunes.length > LIMITE_MEMORIA_COMUNES) {
-                memoriaTemporal.historialComunes.shift();
+            historialComunes.push(itemElegido.index);
+            if (historialComunes.length > LIMITE_MEMORIA_COMUNES) {
+                historialComunes.shift();
             }
 
+            guardarDatoSeguro(CLAVE_HISTORIAL_COMUNES, historialComunes);
             return { texto: itemElegido.text, indiceOriginal: itemElegido.index };
         }
 
         function obtenerTipDorado() {
             let opcionesDisponibles = tipsRaros
                 .map((obj, index) => ({ ...obj, index }))
-                .filter(item => !memoriaTemporal.historialDoradas.includes(item.index));
+                .filter(item => !historialDoradas.includes(item.index));
 
             if (opcionesDisponibles.length === 0) {
-                memoriaTemporal.historialDoradas = [];
+                historialDoradas = [];
                 opcionesDisponibles = tipsRaros.map((obj, index) => ({ ...obj, index }));
             }
 
             const itemElegido = opcionesDisponibles[Math.floor(Math.random() * opcionesDisponibles.length)];
-            memoriaTemporal.historialDoradas.push(itemElegido.index);
+            historialDoradas.push(itemElegido.index);
+            guardarDatoSeguro(CLAVE_HISTORIAL_DORADAS, historialDoradas);
             return itemElegido;
         }
 
+        // --- ELEMENTOS DE INTERFAZ ---
         const envelopeBtn = document.getElementById('envelopeBtn');
         const imgClosed = document.getElementById('imgClosed');
         const imgOpen = document.getElementById('imgOpen');
@@ -503,6 +480,7 @@
             fw3.classList.remove('active');
         }
 
+        // --- CONTROL DE CLICS ---
         envelopeBtn.addEventListener('click', () => {
             if (estaAbierto) return; 
             
@@ -512,11 +490,11 @@
             imgClosed.classList.remove('active');
             imgOpen.classList.add('active');
 
-            const cooldownSuperado = memoriaTemporal.comunesDesdeUltimaDorada >= COOLDOWN_MINIMO_DORADAS;
+            const cooldownSuperado = comunesDesdeUltimaDorada >= COOLDOWN_MINIMO_DORADAS;
             const esDoradoUltraRaro = (Math.random() < 0.0909) && cooldownSuperado;
 
             if (esDoradoUltraRaro) {
-                memoriaTemporal.comunesDesdeUltimaDorada = 0; 
+                comunesDesdeUltimaDorada = 0; 
                 letterPaper.classList.add('gold-card');
                 
                 const raroElegido = obtenerTipDorado();
@@ -525,7 +503,7 @@
                 
                 lanzarEstrellas();
             } else {
-                memoriaTemporal.comunesDesdeUltimaDorada++; 
+                comunesDesdeUltimaDorada++; 
                 letterPaper.classList.remove('gold-card');
                 
                 const tipComunElegido = obtenerTipComun();
@@ -535,6 +513,7 @@
                 tipText.innerText = tipComunElegido.texto;
             }
 
+            guardarDatoSeguro(CLAVE_CONTADOR_COOLDOWN, comunesDesdeUltimaDorada);
             letterPaper.scrollTop = 0;
 
             setTimeout(() => {
