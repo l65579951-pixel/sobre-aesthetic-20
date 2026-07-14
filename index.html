@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght=700&display=swap');
 
-        /* VARIABLES DE COLOR QUE DETECTAN MODO CLARO/OSCURO */
+        /* VARIABLES DE COLOR POR DEFECTO (MODO CLARO) */
         :root {
             --bg-color: transparent; 
             --text-color: #ff65a3;
@@ -19,16 +19,14 @@
             --sub-text-color: #b59ba5;
         }
 
-        /* AJUSTES EXCLUSIVOS PARA MODO OSCURO */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --text-color: #ff8ebb;
-                --main-font-color: #fce4ec;
-                --card-bg: #221a1d; /* Fondo oscuro aesthetic para la carta */
-                --card-border: #ff8ebb; /* Borde rosa más brillante para que destaque */
-                --card-shadow: rgba(255, 142, 187, 0.25);
-                --sub-text-color: #a38591;
-            }
+        /* CLASE PARA MODO OSCURO FORZADO O DETECTADO */
+        .dark-mode {
+            --text-color: #ff8ebb;
+            --main-font-color: #fce4ec;
+            --card-bg: #221a1d; /* Fondo oscuro aesthetic para la carta */
+            --card-border: #ff8ebb; /* Borde rosa más brillante */
+            --card-shadow: rgba(255, 142, 187, 0.25);
+            --sub-text-color: #a38591;
         }
 
         * {
@@ -47,6 +45,7 @@
             font-family: 'Quicksand', sans-serif;
             overflow: hidden;
             position: relative;
+            transition: background 0.3s ease;
         }
 
         h1 {
@@ -58,6 +57,7 @@
             text-align: center;
             padding: 0 15px;
             z-index: 5;
+            transition: color 0.3s;
         }
 
         /* CONTENEDOR PRINCIPAL */
@@ -124,6 +124,7 @@
             color: var(--sub-text-color);
             text-transform: uppercase;
             font-weight: bold;
+            transition: color 0.3s;
         }
 
         /* 👑 ESTILOS EXCLUSIVOS DE LA NOTA DORADA ESPECIAL */
@@ -133,42 +134,38 @@
             box-shadow: 0 0 25px rgba(255, 179, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.6);
             animation: pulseGold 2s infinite alternate;
         }
-        @media (prefers-color-scheme: dark) {
-            .letter.gold-card {
-                background: linear-gradient(135deg, #2d2812 0%, #4a3e1a 50%, #615018 100%);
-                border: 4px dashed #ffd54f;
-                box-shadow: 0 0 25px rgba(255, 213, 79, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.5);
-            }
+        
+        .dark-mode .letter.gold-card {
+            background: linear-gradient(135deg, #2d2812 0%, #4a3e1a 50%, #615018 100%);
+            border: 4px dashed #ffd54f;
+            box-shadow: 0 0 25px rgba(255, 213, 79, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.5);
         }
         
         .letter.gold-card .letter-title {
             color: #b27a00;
             text-shadow: 1px 1px 0px #fff;
         }
-        @media (prefers-color-scheme: dark) {
-            .letter.gold-card .letter-title {
-                color: #ffd54f;
-                text-shadow: 1px 1px 0px #000;
-            }
+        
+        .dark-mode .letter.gold-card .letter-title {
+            color: #ffd54f;
+            text-shadow: 1px 1px 0px #000;
         }
 
         .letter.gold-card .letter-text {
             color: #513b00;
             font-weight: bold;
         }
-        @media (prefers-color-scheme: dark) {
-            .letter.gold-card .letter-text {
-                color: #fff8e1;
-            }
+        
+        .dark-mode .letter.gold-card .letter-text {
+            color: #fff8e1;
         }
 
         .letter.gold-card .click-to-close {
             color: #cca33d;
         }
-        @media (prefers-color-scheme: dark) {
-            .letter.gold-card .click-to-close {
-                color: #ffd54f;
-            }
+        
+        .dark-mode .letter.gold-card .click-to-close {
+            color: #ffd54f;
         }
 
         @keyframes pulseGold {
@@ -223,6 +220,7 @@
             animation: bounce 0.8s infinite alternate;
             pointer-events: none;
             z-index: 30;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         @keyframes bounce {
@@ -305,6 +303,27 @@
     </div>
 
     <script>
+        // --- DETECTOR Y CONFIGURADOR DE MODO OSCURO SEGURO ---
+        function aplicarModoOscuro() {
+            // Comprobamos la preferencia del sistema/navegador
+            const prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // Aplicamos la clase si el sistema está en oscuro
+            if (prefiereOscuro) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+
+        // Ejecutar al cargar la página
+        aplicarModoOscuro();
+
+        // Escuchar si el usuario cambia el tema del sistema en tiempo real
+        if (window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', aplicarModoOscuro);
+        }
+
         const tipsMaquillaje = [
             "La preparación de la piel es el 70% del maquillaje. Limpia, hidrata y usa protector solar antes de empezar.",
             "Espera unos minutos después de la crema hidratante. Así la base no se mezcla con los productos de skincare.",
@@ -365,16 +384,20 @@
             { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje está cumpliendo su función." }
         ];
 
-        // --- SISTEMA INTELIGENTE DE NO REPETICIÓN Y COOLDOWN ---
-        let historialComunes = [];
-        let historialDoradas = [];
-        
-        // El "cooldown" (enfriamiento) lleva la cuenta de cuántos tips comunes han salido 
-        // desde la última vez que salió una dorada.
-        let comunesDesdeUltimaDorada = 15; // Empezamos en 15 para que pueda salir en las primeras tiradas
+        // --- SISTEMA DE MEMORIA LOCAL (LOCALSTORAGE) ---
+        // Esto permite que el navegador de Notion recuerde tu progreso e historiales
+        let historialComunes = JSON.parse(localStorage.getItem('historialComunes')) || [];
+        let historialDoradas = JSON.parse(localStorage.getItem('historialDoradas')) || [];
+        let comunesDesdeUltimaDorada = parseInt(localStorage.getItem('comunesDesdeUltimaDorada')) || 15;
 
         const LIMITE_MEMORIA_COMUNES = 15; 
-        const COOLDOWN_MINIMO_DORADAS = 15; // ¡Mínimo 15 tips comunes entre cada dorada!
+        const COOLDOWN_MINIMO_DORADAS = 15; 
+
+        function guardarDatos() {
+            localStorage.setItem('historialComunes', JSON.stringify(historialComunes));
+            localStorage.setItem('historialDoradas', JSON.stringify(historialDoradas));
+            localStorage.setItem('comunesDesdeUltimaDorada', comunesDesdeUltimaDorada);
+        }
 
         function obtenerTipComun() {
             let opcionesDisponibles = tipsMaquillaje
@@ -393,6 +416,7 @@
                 historialComunes.shift();
             }
 
+            guardarDatos();
             return { texto: itemElegido.text, indiceOriginal: itemElegido.index };
         }
 
@@ -409,6 +433,7 @@
             const itemElegido = opcionesDisponibles[Math.floor(Math.random() * opcionesDisponibles.length)];
             
             historialDoradas.push(itemElegido.index);
+            guardarDatos();
             return itemElegido;
         }
 
@@ -458,12 +483,12 @@
             imgClosed.classList.remove('active');
             imgOpen.classList.add('active');
 
-            // Solo permitimos que salga una dorada si ya pasaron al menos 15 comunes desde la última
+            // 1 de cada 11 posibilidades de dorada, y haber superado el cooldown obligatorio de 15 tiradas comunes
             const cooldownSuperado = comunesDesdeUltimaDorada >= COOLDOWN_MINIMO_DORADAS;
             const esDoradoUltraRaro = (Math.random() < 0.0909) && cooldownSuperado;
 
             if (esDoradoUltraRaro) {
-                comunesDesdeUltimaDorada = 0; // Reiniciamos el contador de enfriamiento
+                comunesDesdeUltimaDorada = 0; 
                 letterPaper.classList.add('gold-card');
                 
                 const raroElegido = obtenerTipDorado();
@@ -472,7 +497,7 @@
                 
                 lanzarEstrellas();
             } else {
-                comunesDesdeUltimaDorada++; // Sumamos uno al contador de comunes vistas
+                comunesDesdeUltimaDorada++; 
                 letterPaper.classList.remove('gold-card');
                 
                 const tipComunElegido = obtenerTipComun();
@@ -482,6 +507,7 @@
                 tipText.innerText = tipComunElegido.texto;
             }
 
+            guardarDatos();
             letterPaper.scrollTop = 0;
 
             setTimeout(() => {
