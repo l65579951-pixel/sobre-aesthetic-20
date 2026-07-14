@@ -13,12 +13,21 @@
             --bg-color: transparent; 
             --text-color: #ff65a3;
             --main-font-color: #5d424d;
+            --card-bg: #ffffff;
+            --card-border: #ff65a3;
+            --card-shadow: rgba(255, 101, 163, 0.15);
+            --sub-text-color: #b59ba5;
         }
 
+        /* AJUSTES EXCLUSIVOS PARA MODO OSCURO */
         @media (prefers-color-scheme: dark) {
             :root {
                 --text-color: #ff8ebb;
                 --main-font-color: #fce4ec;
+                --card-bg: #221a1d; /* Fondo oscuro aesthetic para la carta */
+                --card-border: #ff8ebb; /* Borde rosa más brillante para que destaque */
+                --card-shadow: rgba(255, 142, 187, 0.25);
+                --sub-text-color: #a38591;
             }
         }
 
@@ -43,7 +52,7 @@
         h1 {
             font-family: 'Fredoka One', cursive;
             color: var(--text-color);
-            text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.5);
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.15);
             margin-bottom: 50px;
             font-size: 24px;
             text-align: center;
@@ -67,11 +76,11 @@
             position: absolute;
             bottom: 40px; 
             width: 240px;
-            background: #ffffff;
-            border: 4px solid #ff65a3;
+            background: var(--card-bg);
+            border: 4px solid var(--card-border);
             border-radius: 16px;
             padding: 16px;
-            box-shadow: 0 10px 20px rgba(255, 101, 163, 0.1);
+            box-shadow: 0 10px 20px var(--card-shadow);
             z-index: 10;
             transform: translateY(0) scale(0.8);
             opacity: 0;
@@ -84,7 +93,7 @@
         }
 
         .letter::-webkit-scrollbar { width: 4px; }
-        .letter::-webkit-scrollbar-thumb { background: #ff65a3; border-radius: 4px; }
+        .letter::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 4px; }
 
         .letter.reveal {
             transform: translateY(-140px) scale(1);
@@ -94,7 +103,7 @@
 
         .letter-title {
             font-family: 'Fredoka One', cursive;
-            color: #ff65a3;
+            color: var(--text-color);
             font-size: 13px;
             margin-bottom: 8px;
             text-transform: uppercase;
@@ -103,7 +112,7 @@
         }
 
         .letter-text {
-            color: #5d424d;
+            color: var(--main-font-color);
             font-size: 12.5px;
             line-height: 1.4;
             transition: color 0.3s;
@@ -112,7 +121,7 @@
         .click-to-close {
             margin-top: 10px;
             font-size: 9px;
-            color: #b59ba5;
+            color: var(--sub-text-color);
             text-transform: uppercase;
             font-weight: bold;
         }
@@ -124,16 +133,42 @@
             box-shadow: 0 0 25px rgba(255, 179, 0, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.6);
             animation: pulseGold 2s infinite alternate;
         }
+        @media (prefers-color-scheme: dark) {
+            .letter.gold-card {
+                background: linear-gradient(135deg, #2d2812 0%, #4a3e1a 50%, #615018 100%);
+                border: 4px dashed #ffd54f;
+                box-shadow: 0 0 25px rgba(255, 213, 79, 0.4), inset 0 0 15px rgba(0, 0, 0, 0.5);
+            }
+        }
+        
         .letter.gold-card .letter-title {
             color: #b27a00;
             text-shadow: 1px 1px 0px #fff;
         }
+        @media (prefers-color-scheme: dark) {
+            .letter.gold-card .letter-title {
+                color: #ffd54f;
+                text-shadow: 1px 1px 0px #000;
+            }
+        }
+
         .letter.gold-card .letter-text {
             color: #513b00;
             font-weight: bold;
         }
+        @media (prefers-color-scheme: dark) {
+            .letter.gold-card .letter-text {
+                color: #fff8e1;
+            }
+        }
+
         .letter.gold-card .click-to-close {
             color: #cca33d;
+        }
+        @media (prefers-color-scheme: dark) {
+            .letter.gold-card .click-to-close {
+                color: #ffd54f;
+            }
         }
 
         @keyframes pulseGold {
@@ -177,7 +212,7 @@
         .guide-bubble {
             position: absolute;
             top: -40px;
-            background: #ff65a3;
+            background: var(--card-border);
             color: white;
             border: 2px solid white;
             padding: 4px 10px;
@@ -195,18 +230,18 @@
             100% { transform: translateY(-6px); }
         }
 
-        /* ✨ CONTENEDOR DE FUEGOS ARTIFICIALES (EN EL CENTRO DEL SOBRE / GIGANTE) */
+        /* ✨ CONTENEDOR DE FUEGOS ARTIFICIALES */
         .fireworks-container {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 550px;  /* ¡Súper Gigante! */
+            width: 550px; 
             height: 550px;
-            max-width: 95vw; /* Para que no desborde en pantallas chicas */
+            max-width: 95vw; 
             max-height: 95vh;
             pointer-events: none;
-            z-index: 300; /* Adelante de absolutamente TODO (Sobre, Carta, Textos) */
+            z-index: 300; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -219,10 +254,9 @@
             object-fit: contain;
             opacity: 0;
             transition: opacity 0.6s ease-in-out, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: scale(0.4); /* Comienza chico en el centro */
+            transform: scale(0.4); 
         }
 
-        /* Todos se centran exactamente uno encima del otro en el mismo eje */
         #fw1, #fw2, #fw3 {
             top: 0;
             left: 0;
@@ -232,8 +266,8 @@
         }
 
         .firework.active {
-            opacity: 0.95; /* Súper brillante y nítido */
-            transform: scale(1.15); /* Crece un montón en la explosión */
+            opacity: 0.95; 
+            transform: scale(1.15); 
         }
     </style>
 </head>
@@ -243,7 +277,7 @@
 
     <div class="scene">
         
-        <!-- Capa de Fuegos Artificiales Gigantes encima de todo -->
+        <!-- Capa de Fuegos Artificiales Gigantes -->
         <div class="fireworks-container">
             <img src="https://i.postimg.cc/m2zw4sT8/Find-Share-on-GIPHY.gif" class="firework" id="fw1">
             <img src="https://i.postimg.cc/q7LcwBGB/2674081026469214.gif" class="firework" id="fw2">
@@ -291,7 +325,7 @@
             "Humedece el pincel para sombras metálicas. Obtendrás un brillo mucho más intenso.",
             "Haz el delineado mirando al frente. Así respetas la forma natural de tus ojos.",
             "Riza las pestañas antes del rímel. Nunca después, salvo que quieras poner a prueba la resistencia de tus pestañas.",
-            "Aplica el rubor un poco más alto. Ayuda a dar un efecto de rostro más levantado.",
+            "Aplica el rubor un poco más alto. Para un efecto lifting, llévalo hacia las sienes.",
             "El bronzer debe imitar una sombra natural. No tiene que verse naranja ni formar una línea marcada.",
             "El iluminador se ve mejor con moderación. Puntos estratégicos como pómulos, lagrimal y arco de Cupido suelen ser suficientes.",
             "Perfila los labios antes del labial. Aumenta la duración y ayuda a definir la forma.",
@@ -303,7 +337,6 @@
             "Elige brochas pequeñas para mayor precisión, incluso en zonas amplias.",
             "Difumina siempre el contorno hacia arriba, nunca hacia abajo.",
             "No lleves el corrector hasta la línea inferior completa del ojo; concentra el producto donde realmente hay oscuridad.",
-            "Para un efecto lifting, lleva el rubor ligeramente hacia las sienes.",
             "Usa un espejo un poco más abajo de tu rostro al maquillar los ojos para mantenerlos relajados.",
             "Retira el exceso de máscara del cepillo antes de aplicarla para evitar grumos.",
             "Aplica el rímel desde la raíz haciendo un ligero movimiento en zigzag.",
@@ -324,7 +357,6 @@
             "Da un paso atrás del espejo al finalizar. De cerca todo parece un proyecto de restauración arqueológica; a una distancia normal es donde realmente se aprecia si el maquillaje está equilibrado."
         ];
 
-        // Los 5 tips ultra raros dorados numerados
         const tipsRaros = [
             { numero: "01", titulo: "👑 Especial #01: Dimensión 👑", texto: "Los profesionales no ven una cara como 'ojos, labios y mejillas'. Ven luces, sombras, profundidad y volumen. Antes de aplicar cualquier producto, observa dónde la luz golpea naturalmente tu rostro y dónde se forman las sombras. Eso hace que el maquillaje se vea armónico en lugar de 'dibujado'." },
             { numero: "02", titulo: "👑 Especial #02: El Secreto 👑", texto: "El difuminado perfecto casi nunca se logra añadiendo producto, sino quitándolo. Cuando sientas que una sombra o un rubor quedó muy intenso, no agregues más color para corregirlo. Usa una brocha completamente limpia y realiza movimientos suaves en los bordes para lograr esa transición impecable." },
@@ -332,6 +364,53 @@
             { numero: "04", titulo: "👑 Especial #04: Distancia 👑", texto: "Los maquilladores profesionales alternan entre trabajar de cerca y observar el rostro desde uno o dos metros de distancia. De cerca corriges detalles; de lejos ves el equilibrio general. Muchas veces algo que parece perfecto a cinco centímetros resulta demasiado intenso a distancia normal." },
             { numero: "05", titulo: "👑 Especial #05: Nivel Pro 👑", texto: "El mejor maquillaje es el que no se nota... pero hace que todos noten tu rostro. El objetivo no es que alguien diga 'Qué linda base', sino 'Qué linda te ves hoy'. Cuando la atención se centra en tu expresión y no en los productos, el maquillaje está cumpliendo su función." }
         ];
+
+        // --- SISTEMA INTELIGENTE DE NO REPETICIÓN Y COOLDOWN ---
+        let historialComunes = [];
+        let historialDoradas = [];
+        
+        // El "cooldown" (enfriamiento) lleva la cuenta de cuántos tips comunes han salido 
+        // desde la última vez que salió una dorada.
+        let comunesDesdeUltimaDorada = 15; // Empezamos en 15 para que pueda salir en las primeras tiradas
+
+        const LIMITE_MEMORIA_COMUNES = 15; 
+        const COOLDOWN_MINIMO_DORADAS = 15; // ¡Mínimo 15 tips comunes entre cada dorada!
+
+        function obtenerTipComun() {
+            let opcionesDisponibles = tipsMaquillaje
+                .map((text, index) => ({ text, index }))
+                .filter(item => !historialComunes.includes(item.index));
+
+            if (opcionesDisponibles.length === 0) {
+                historialComunes = [];
+                opcionesDisponibles = tipsMaquillaje.map((text, index) => ({ text, index }));
+            }
+
+            const itemElegido = opcionesDisponibles[Math.floor(Math.random() * opcionesDisponibles.length)];
+            
+            historialComunes.push(itemElegido.index);
+            if (historialComunes.length > LIMITE_MEMORIA_COMUNES) {
+                historialComunes.shift();
+            }
+
+            return { texto: itemElegido.text, indiceOriginal: itemElegido.index };
+        }
+
+        function obtenerTipDorado() {
+            let opcionesDisponibles = tipsRaros
+                .map((obj, index) => ({ ...obj, index }))
+                .filter(item => !historialDoradas.includes(item.index));
+
+            if (opcionesDisponibles.length === 0) {
+                historialDoradas = [];
+                opcionesDisponibles = tipsRaros.map((obj, index) => ({ ...obj, index }));
+            }
+
+            const itemElegido = opcionesDisponibles[Math.floor(Math.random() * opcionesDisponibles.length)];
+            
+            historialDoradas.push(itemElegido.index);
+            return itemElegido;
+        }
 
         const envelopeBtn = document.getElementById('envelopeBtn');
         const imgClosed = document.getElementById('imgClosed');
@@ -341,7 +420,6 @@
         const tipText = document.getElementById('tipText');
         const guideText = document.getElementById('guideText');
         
-        // Elementos de los fuegos artificiales
         const fw1 = document.getElementById('fw1');
         const fw2 = document.getElementById('fw2');
         const fw3 = document.getElementById('fw3');
@@ -351,17 +429,13 @@
 
         function lanzarEstrellas() {
             limpiarEstrellas();
-
-            // 1. Aparece el primero instantáneamente gigante en el centro
             fw1.classList.add('active');
             
-            // 2. A los 2 segundos aparecen los otros dos directamente encima en el mismo eje
             fw23Timeout = setTimeout(() => {
                 fw2.classList.add('active');
                 fw3.classList.add('active');
             }, 2000);
 
-            // 3. A los 6 segundos de abrirse se desvanecen todos para poder leer sin problemas
             clearFwTimeout = setTimeout(() => {
                 limpiarEstrellas();
             }, 6000);
@@ -384,27 +458,28 @@
             imgClosed.classList.remove('active');
             imgOpen.classList.add('active');
 
-            // Probabilidad exacta de 1 entre 12 (aprox 8.33%)
-            const esDoradoUltraRaro = Math.random() < 0.0833;
+            // Solo permitimos que salga una dorada si ya pasaron al menos 15 comunes desde la última
+            const cooldownSuperado = comunesDesdeUltimaDorada >= COOLDOWN_MINIMO_DORADAS;
+            const esDoradoUltraRaro = (Math.random() < 0.0909) && cooldownSuperado;
 
             if (esDoradoUltraRaro) {
+                comunesDesdeUltimaDorada = 0; // Reiniciamos el contador de enfriamiento
                 letterPaper.classList.add('gold-card');
-                const raroElegido = tipsRaros[Math.floor(Math.random() * tipsRaros.length)];
+                
+                const raroElegido = obtenerTipDorado();
                 letterTitle.innerText = raroElegido.titulo;
                 tipText.innerText = raroElegido.texto;
                 
-                // Lanzar fuegos artificiales gigantes centrados en el sobre/pantalla
                 lanzarEstrellas();
             } else {
+                comunesDesdeUltimaDorada++; // Sumamos uno al contador de comunes vistas
                 letterPaper.classList.remove('gold-card');
-                const indiceRandom = Math.floor(Math.random() * tipsMaquillaje.length);
-                const tipElegido = tipsMaquillaje[indiceRandom];
                 
-                // Formateamos el número para que siempre tenga dos dígitos (ej: #03)
-                const numeroTip = String(indiceRandom + 1).padStart(2, '0');
+                const tipComunElegido = obtenerTipComun();
+                const numeroTip = String(tipComunElegido.indiceOriginal + 1).padStart(2, '0');
                 
                 letterTitle.innerText = `💄 Tip #${numeroTip} 💄`;
-                tipText.innerText = tipElegido;
+                tipText.innerText = tipComunElegido.texto;
             }
 
             letterPaper.scrollTop = 0;
