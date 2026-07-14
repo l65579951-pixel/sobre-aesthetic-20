@@ -45,31 +45,33 @@
             font-family: 'Quicksand', sans-serif;
             overflow: hidden;
             position: relative;
-            transition: background 0.3s ease;
         }
 
-        /* BOTÓN MANUAL DE MODO OSCURO (Discreto y elegante) */
+        /* BOTÓN DE MODO OSCURO */
         .theme-toggle {
             position: absolute;
             top: 15px;
             right: 15px;
-            background: rgba(255, 101, 163, 0.15);
+            background: rgba(255, 101, 163, 0.1);
             border: 2px solid var(--card-border);
             color: var(--text-color);
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
             z-index: 100;
-            transition: all 0.2s ease;
+            outline: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.2s ease, background-color 0.3s ease;
         }
         .theme-toggle:hover {
             transform: scale(1.1);
-            background: rgba(255, 101, 163, 0.25);
+            background: rgba(255, 101, 163, 0.2);
         }
 
         h1 {
@@ -295,7 +297,7 @@
 </head>
 <body>
 
-    <!-- Botón manual para cambiar de tema e informar al widget -->
+    <!-- Botón manual para alternar el tema -->
     <button class="theme-toggle" id="themeToggleBtn" title="Cambiar tema">☾</button>
 
     <h1 id="mainHeader">💌 ¡Toca el sobre para ver un tip!</h1>
@@ -330,52 +332,30 @@
     </div>
 
     <script>
-        // --- GESTOR DE MODO OSCURO SÚPER PRECISO ---
+        // --- SELECCIÓN Y GUARDADO ABSOLUTO DEL TEMA ---
         const themeToggleBtn = document.getElementById('themeToggleBtn');
 
-        function setTema(modo) {
-            if (modo === 'dark') {
+        function aplicarTema(tema) {
+            if (tema === 'dark') {
                 document.body.classList.add('dark-mode');
-                themeToggleBtn.innerText = '☀';
-                localStorage.setItem('temaForzado', 'dark');
+                themeToggleBtn.innerText = '☀'; // Sol para cambiar a claro
+                localStorage.setItem('preferenciaTema', 'dark');
             } else {
                 document.body.classList.remove('dark-mode');
-                themeToggleBtn.innerText = '☾';
-                localStorage.setItem('temaForzado', 'light');
+                themeToggleBtn.innerText = '☾'; // Luna para cambiar a oscuro
+                localStorage.setItem('preferenciaTema', 'light');
             }
         }
 
-        // 1. Detección Inteligente por consulta de sistema
-        function autoDetectarTema() {
-            const temaGuardado = localStorage.getItem('temaForzado');
-            if (temaGuardado) {
-                setTema(temaGuardado);
-            } else {
-                const prefiereOscuro = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                setTema(prefiereOscuro ? 'dark' : 'light');
-            }
-        }
+        // Cargar el tema guardado. Si no existe, usar el claro por defecto.
+        const temaInicial = localStorage.getItem('preferenciaTema') || 'light';
+        aplicarTema(temaInicial);
 
-        // 2. Control de clic manual (Siempre tiene prioridad y se guarda)
+        // Cambiar de tema únicamente al presionar el botón
         themeToggleBtn.addEventListener('click', () => {
-            if (document.body.classList.contains('dark-mode')) {
-                setTema('light');
-            } else {
-                setTema('dark');
-            }
+            const esOscuro = document.body.classList.contains('dark-mode');
+            aplicarTema(esOscuro ? 'light' : 'dark');
         });
-
-        // Inicializar tema al cargar
-        autoDetectarTema();
-
-        // Escuchar cambios de Notion del sistema
-        if (window.matchMedia) {
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!localStorage.getItem('temaForzado')) {
-                    setTema(e.matches ? 'dark' : 'light');
-                }
-            });
-        }
 
 
         // --- BASE DE DATOS DE TIPS ---
@@ -537,7 +517,6 @@
             imgClosed.classList.remove('active');
             imgOpen.classList.add('active');
 
-            // 1 de cada 11 posibilidades (~9.09%) + cooldown
             const cooldownSuperado = comunesDesdeUltimaDorada >= COOLDOWN_MINIMO_DORADAS;
             const esDoradoUltraRaro = (Math.random() < 0.0909) && cooldownSuperado;
 
